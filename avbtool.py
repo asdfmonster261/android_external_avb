@@ -773,7 +773,7 @@ class MLDSAPublicKey(object):
                 'pubkey=FORMAT:HEX,BITSTRING:{}\n'
                 '\n'
                 '[mldsa_alg]\n'
-                'algorithm=OID:{}\n').format(hex(pub), oid)
+                'algorithm=OID:{}\n').format(pub.hex(), oid)
     with tempfile.NamedTemporaryFile() as asn1_tmpfile:
       asn1_tmpfile.write(asn1_str.encode('ascii'))
       asn1_tmpfile.flush()
@@ -890,11 +890,11 @@ class MLDSAPublicKey(object):
       raise AvbError('Algorithm with name {} is not supported.'
                      .format(algorithm_name))
 
-    if len(self.pub) != algorithm.public_key_num_bytes:
+    if len(self.pub) + 4 != algorithm.public_key_num_bytes:
       raise AvbError('Key size of key ({} bytes) does not match key size '
                      '({} bytes) of given algorithm {}.'
-                     .format(len(self.pub),
-                             algorithm.signature_num_bytes,
+                     .format(len(self.pub) + 4,
+                             algorithm.public_key_num_bytes,
                              algorithm_name))
 
     # Verifies the signature.
